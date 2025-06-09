@@ -1,0 +1,40 @@
+#🎵 5. Songs API
+
+const mongoose = require('mongoose');
+
+const SongSchema = new mongoose.Schema({
+  title: String,
+  artist: String,
+  album: String,
+  audioUrl: String,
+  cover: String
+});
+
+module.exports = mongoose.model('Song', SongSchema);
+
+
+#routes/songs.js
+
+
+const router = require('express').Router();
+const Song = require('../models/Song');
+
+// Get all songs
+router.get('/', async (req, res) => {
+  const songs = await Song.find();
+  res.json(songs);
+});
+
+// Add a song (mock only; real version uses multer for file upload)
+router.post('/', async (req, res) => {
+  try {
+    const newSong = new Song(req.body); // Expects JSON with fields
+    await newSong.save();
+    res.status(201).json(newSong);
+  } catch (err) {
+    res.status(400).send("Error uploading song");
+  }
+});
+
+module.exports = router;
+
